@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CreateNormal : MonoBehaviour {
 
+    public float delta = 1.0f;
     // Use this for initialization
     private void Awake()
     {
