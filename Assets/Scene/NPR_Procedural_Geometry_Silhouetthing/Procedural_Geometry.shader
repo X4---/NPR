@@ -96,7 +96,7 @@
 				//计算世界坐标下 视点位置的矢量
 				o.viewdir = normalize(_WorldSpaceCameraPos.xyz - mul(unity_ObjectToWorld, v.vertex).xyz);
 				//将位置沿视口方向进行修正 修正得到的结果进行黑色描边
-				o.pos = UnityObjectToClipPos(v.vertex - o.viewdir *_Gate);
+				o.pos = UnityObjectToClipPos(v.vertex +  mul( unity_WorldToObject , o.viewdir *_Gate ));
 				
 				return o;
 			}
