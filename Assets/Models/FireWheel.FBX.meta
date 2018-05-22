@@ -1,0 +1,203 @@
+fileFormatVersion: 2
+guid: d4b5ed90b3eac784a9b837a563000d60
+timeCreated: 1526264637
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: G_Center
+    100004: G_exhaustPipe_BL
+    100006: G_exhaustPipe_BR
+    100008: G_exhaustPipe_FL
+    100010: G_exhaustPipe_FR
+    100012: G_FireWheel_Root
+    100014: G_footAttach_L
+    100016: G_footAttach_R
+    100018: G_footRestL1_
+    100020: G_footRestL2_
+    100022: G_footRestR1_
+    100024: G_footRestR2_
+    100026: G_Front_Steering
+    100028: G_Front_Sus
+    100030: G_Front_Wheel_base
+    100032: G_Front_Wheel_real
+    100034: G_Front_Wheel_speed
+    100036: G_FrontHalf
+    100038: G_handle_Grip_L
+    100040: G_handle_Grip_R
+    100042: G_handle_L
+    100044: G_handle_R
+    100046: G_indicator_base
+    100048: G_mana_meter
+    100050: G_oil_meter
+    100052: G_pedal_L
+    100054: G_pedal_pipe_L
+    100056: G_pedal_pipe_R
+    100058: G_pedal_R
+    100060: G_Rear_Front_FX
+    100062: G_Rear_Sus
+    100064: G_Rear_Wheel_base
+    100066: G_Rear_Wheel_cover
+    100068: G_Rear_Wheel_FX
+    100070: G_Rear_Wheel_real
+    100072: G_Rear_Wheel_speed
+    100074: G_RearHalf
+    100076: G_RiderAttach
+    100078: G_SideArmor_L
+    100080: G_SideArmor_R
+    100082: G_sideBumperBL
+    100084: G_sideBumperBR
+    100086: G_sideBumperFL
+    100088: G_sideBumperFR
+    100090: G_sideFrame_L
+    100092: G_sideFrame_R
+    100094: G_speedometer
+    100096: G_SwordCover
+    100098: G_SwordHolder
+    100100: G_takometer
+    100102: group1
+    100104: MI_Glow_uniqueA_
+    100106: MI_MAIN_BASE_
+    100108: MI_MAIN_DECAL_
+    100110: MI_SHADOW_
+    100112: WHEEL_GLOW_
+    400000: //RootNode
+    400002: G_Center
+    400004: G_exhaustPipe_BL
+    400006: G_exhaustPipe_BR
+    400008: G_exhaustPipe_FL
+    400010: G_exhaustPipe_FR
+    400012: G_FireWheel_Root
+    400014: G_footAttach_L
+    400016: G_footAttach_R
+    400018: G_footRestL1_
+    400020: G_footRestL2_
+    400022: G_footRestR1_
+    400024: G_footRestR2_
+    400026: G_Front_Steering
+    400028: G_Front_Sus
+    400030: G_Front_Wheel_base
+    400032: G_Front_Wheel_real
+    400034: G_Front_Wheel_speed
+    400036: G_FrontHalf
+    400038: G_handle_Grip_L
+    400040: G_handle_Grip_R
+    400042: G_handle_L
+    400044: G_handle_R
+    400046: G_indicator_base
+    400048: G_mana_meter
+    400050: G_oil_meter
+    400052: G_pedal_L
+    400054: G_pedal_pipe_L
+    400056: G_pedal_pipe_R
+    400058: G_pedal_R
+    400060: G_Rear_Front_FX
+    400062: G_Rear_Sus
+    400064: G_Rear_Wheel_base
+    400066: G_Rear_Wheel_cover
+    400068: G_Rear_Wheel_FX
+    400070: G_Rear_Wheel_real
+    400072: G_Rear_Wheel_speed
+    400074: G_RearHalf
+    400076: G_RiderAttach
+    400078: G_SideArmor_L
+    400080: G_SideArmor_R
+    400082: G_sideBumperBL
+    400084: G_sideBumperBR
+    400086: G_sideBumperFL
+    400088: G_sideBumperFR
+    400090: G_sideFrame_L
+    400092: G_sideFrame_R
+    400094: G_speedometer
+    400096: G_SwordCover
+    400098: G_SwordHolder
+    400100: G_takometer
+    400102: group1
+    400104: MI_Glow_uniqueA_
+    400106: MI_MAIN_BASE_
+    400108: MI_MAIN_DECAL_
+    400110: MI_SHADOW_
+    400112: WHEEL_GLOW_
+    4300000: MI_SHADOW_
+    4300002: MI_Glow_uniqueA_
+    4300004: MI_MAIN_BASE_
+    4300006: MI_MAIN_DECAL_
+    4300008: WHEEL_GLOW_
+    7400000: Take 001
+    9500000: //RootNode
+    13700000: MI_Glow_uniqueA_
+    13700002: MI_MAIN_BASE_
+    13700004: MI_MAIN_DECAL_
+    13700006: MI_SHADOW_
+    13700008: WHEEL_GLOW_
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
