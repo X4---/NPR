@@ -17,6 +17,8 @@
 
 		HightLightColor("HighLightColor", Vector) = (0.25, 0.25, 0.25, 1)//c19
 
+		_Zoffset("_Zoffset", Range(-1,1)) = 0
+		_Gate("_Gate", Range(-1,1)) = 0
 
 		c1("c1", Vector) = (0.100000001, 3, 2, -10)
 		c3("c3", Vector) = (0.075000003, -0.5, -0.25, -0.75)
@@ -57,14 +59,12 @@
 				float4 vertex : POSITION;
 				float2 uv : TEXCOORD0;
 				float3 normal : NORMAL;
-				float3 color : COLOR;
+				float4 color : COLOR;
 			};
 
 			struct v2f
 			{
-				float3 worldnormal : NORMAL;
 				float3 color : COLOR;
-				float2 uv : TEXCOORD0;
 				float4 vertex : SV_POSITION;
 			};
 
@@ -73,23 +73,79 @@
 			sampler2D ILM;
 
 			uniform float OutLineZoffset;
+			uniform float _Zoffset;
+			uniform float _Gate;
+
+			void Z_BiasMethod(appdata v, inout v2f o)
+			{
+				float4 viewpos = mul(UNITY_MATRIX_MV, v.vertex);
+				//将ViewPos 向靠近摄像机的方向移动
+				//Unity 的视口 +Z 方向 在摄像机后方
+				viewpos.z += _Zoffset;
+				o.vertex = mul(UNITY_MATRIX_P, viewpos);
+				o.color = v.color;
+
+			}
+
+			void VertexNormalMethod0(appdata v, inout v2f o)
+			{
+				float3 viewnormal = mul(UNITY_MATRIX_IT_MV, v.normal);
+				float2 offset = TransformViewToProjection(viewnormal);
+
+				o.vertex = UnityObjectToClipPos(v.vertex);
+				o.vertex.xy += offset * _Gate;
+				o.color = v.color;
+
+			}
+
+			void VertexNormalMehtod1(appdata v, inout v2f o)
+			{
+				float4 viewPos = mul(UNITY_MATRIX_MV, v.vertex);
+				float3 viewnormal = mul(UNITY_MATRIX_IT_MV, v.normal);
+
+				//修正矢量 一般是向后方
+				viewnormal.z = _Zoffset;
+
+				viewPos += float4(normalize(viewnormal), 0) * _Gate;
+				o.vertex = mul(UNITY_MATRIX_P, viewPos);
+				o.color = v.color;
+
+			}
+
+			//罪恶装备使用的方式 Z-Bias 和VertexNormal 相结合
+			//顶线颜色
+			//v.color.b 是轮廓线 法向 Normal 修正值
+			//v.color.a 轮廓线的粗细 , 0.5 是标准, 1 是最粗, 0是没有
+
+			void Z_Bias_VertexNormalCombine(appdata v, inout v2f o)
+			{
+				float4 viewPos = mul(UNITY_MATRIX_MV, v.vertex);
+				float3 viewnormal = mul(UNITY_MATRIX_IT_MV, v.normal);
+
+				//
+				viewnormal.z = -v.color.b;
+				viewPos += float4(normalize(viewnormal), 0) * _Gate * v.color.a;
+
+				o.vertex = mul(UNITY_MATRIX_P, viewPos);
+				o.color = v.color;
+
+			}
 
 			v2f vert(appdata v)
 			{
 				v2f o;
 
-				o.vertex = o.vertex = UnityObjectToClipPos(v.vertex);
-				float3 norm = (mul((float3x3)UNITY_MATRIX_IT_MV, v.normal));
-				float2 offset = TransformViewToProjection(norm.xy);
-
-				o.vertex.xy += offset * OutLineZoffset;
+				//Z_BiasMethod(v, o);
+				//VertexNormalMethod0(v, o);
+				//VertexNormalMehtod1(v, o);
+				Z_Bias_VertexNormalCombine(v, o);
 
 				return o;
 			}
 
 			fixed4 frag(v2f i) : SV_Target
 			{
-				//clip(-1);
+				clip(-1);
 				fixed4 col = fixed4(0.0, 0.0, 0.0, 0.0);
 				
 				return col;
@@ -204,7 +260,7 @@
 				o.color = v.color;
 				o.uv = v.uv;
 
-				o.worldnormal = normalize(mul((float3x3)UNITY_MATRIX_IT_MV, v.normal));
+				o.worldnormal = normalize(UnityObjectToWorldNormal(v.normal));
 				o.worldpos = mul(unity_ObjectToWorld, v.vertex);
 
 				return o;
@@ -213,7 +269,7 @@
 			fixed4 frag (v2f i) : SV_Target
 			{
 				fixed4 col;
-				
+				//return 1;
 				float4 base = tex2D(Base, i.uv);
 				float4 sss = tex2D(SSS, i.uv);
 				float4 ilm = tex2D(ILM, i.uv);
