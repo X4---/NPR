@@ -75,7 +75,7 @@
 				float3 WorldPart = c235.x * c229.z * c229.y * v.color.y * v.color.a * l;
 					WorldPart += c235.z* c229.z * v.color.a;
 
-					WorldPart *= worldnormal /4/2; //顶点颜色不对,所以额外进行的一个缩放修正
+					WorldPart *= worldnormal * c235.w; //顶点颜色不对,所以额外进行的一个缩放修正
 
 				float3 offset = c235.w * (ViewPart + WorldPart);
 
