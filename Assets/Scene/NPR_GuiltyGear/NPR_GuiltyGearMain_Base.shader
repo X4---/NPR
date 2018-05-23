@@ -205,7 +205,7 @@
 
 				//法向和光照点乘
 				float DotValue1 = dot(LightDir, Worldnormal);
-				//法向和世界位置点乘
+				//法向和世界位置点乘   // 等效于从世界原点 发出的光
 				float DotValue2 = dot(Worldnormal, -normalize(i.worldpos));
 
 
@@ -224,10 +224,18 @@
 				//标准光照 选择基本的光照颜色
 				float3 NormalColor = BeLight * Equaloverzero + (1 - BeLight) * Lessrzero;
 
+				//return BeLight;
+				//return fixed4(NormalColor, 1);
+
 
 				// 计算边缘光
 				float keyNormal2 = (abs(DotValue1 + c1.x) + c6.z)
 					* (-DotValue2 + c6.z) * c7.y + c7.w; //( *1/2 -0.5 )
+
+				// = 1 + abs(DotValue1 + c1.x) - DotValue2 - DotValue2 * abs(DotValue1 + c1.x) >= 1 ?
+				// => abs(DotValue1 + c1.x) - DotValue2 * abs(DotValue1 + c1.x) >= DotValue2 
+				// => abs(DotValue1 +c1.x) * ( 1 - DotValue2 ) >= DotValue2
+				// => (1 - DotValue2) >=  Dotvalue2 / abs(DotValue1 + c1.x);
 
 				//					     强度   贴图强度  Debug参数
 				float EdageLightStength = c3.x * base.a * EdageLightPower;//c23.w;
@@ -240,7 +248,8 @@
 
 				//标准光照 + 边缘光的结果
 				float3 NormalAddEdageColor = NormalColor + EdageStength;
-
+				//return BeEdageLight;
+				//return base.a;
 
 				//计算奇怪的颜色 影的颜色;
 				float3 strangeS1 = base.xyz * sss.xyz;
