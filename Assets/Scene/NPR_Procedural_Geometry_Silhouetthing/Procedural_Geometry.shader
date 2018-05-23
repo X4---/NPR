@@ -2,62 +2,24 @@
 {
 	Properties
 	{
-		_MainTex("Texture", 2D) = "white" {}
-		_Gate("Gate Value" , Range(0,1)) = 0.1
-		_Zoffset("Zoff", float) = -1.0
+		c1("c1", Vector) =(0.298999995, 0.587000012, 0.114, 0.000000001)
+		c3("c3", Vector) =(2.20000005, 1, 0, 0)
+		c4("c4", Vector) = (3, 0.00784313772, -1, 1)
+
+		c8("c8", Vector) = (0.1, 0, 0, 0.25)
+		c9("c9", Vector) = (0.427, 0.506, 0.502, 0)
+		c10("c10", Vector) = (1, 1, 1, 0)
+		c11("c11", Vector) = (0, 0, 0, 0)
+		c12("c12", Vector) = (1, 0, 0, 0)
+
+		c229("c229", Vector) = (0.2308682, 0.1154341, 1, 0.7)
+		c234("c234", Vector) = (0,1,0,0)
+		c235("c235", Vector) = (0.050000007, 0.06750000027, 0.30000012, 0.1000001)
 	}
 	SubShader
 	{
 		Tags{ "RenderType" = "Opaque" }
 		LOD 100
-
-		Pass
-		{
-			Cull Back
-
-			CGPROGRAM
-			#pragma vertex vert
-			#pragma fragment frag
-
-			#include "UnityCG.cginc"
-
-			struct appdata
-			{
-				float4 vertex : POSITION;
-				float3 normal : NORMAL;
-			};
-
-			struct v2f
-			{
-				float4 pos : SV_POSITION;
-				float3 worldnormal : NORMAL;
-				float3 viewdir : UV;
-			};
-
-			sampler2D _MainTex;
-			uniform float4 _MainTex_ST;
-			uniform float4 _LightDir;
-			uniform float4 _LightPower;
-			uniform float _Gate;
-			uniform float _Zoffset;
-
-			v2f vert(appdata v)
-			{
-				v2f o;
-				o.pos = UnityObjectToClipPos(v.vertex);
-
-				return o;
-			}
-			
-			//Front 表面正常渲染
-
-			float4 frag(v2f i) : SV_Target
-			{
-				float4 lastColor = float4(1.0, 1.0, 1.0, 1.0);
-				return lastColor;
-			}
-			ENDCG
-		}
 
 		Pass
 		{
@@ -82,46 +44,17 @@
 				float3 color: COLOR;
 			};
 
-			sampler2D _MainTex;
-			uniform float4 _MainTex_ST;
-			uniform float _Gate;
-			uniform float _Zoffset;
-
-			void Z_BiasMethod(appdata v, inout v2f o)
-			{
-				float4 viewpos = mul(UNITY_MATRIX_MV, v.vertex);
-				//将ViewPos 向靠近摄像机的方向移动
-				//Unity 的视口 +Z 方向 在摄像机后方
-				viewpos.z += _Zoffset;
-				o.pos = mul(UNITY_MATRIX_P, viewpos);
-				o.color = v.color;
-
-			}
-
-			void VertexNormalMethod0(appdata v, inout v2f o)
-			{
-				float3 viewnormal = mul(UNITY_MATRIX_IT_MV, v.normal);
-				float2 offset = TransformViewToProjection(viewnormal);
-
-				o.pos = UnityObjectToClipPos(v.vertex);
-				o.pos.xy += offset * _Gate;
-				o.color = v.color;
-
-			}
-
-			void VertexNormalMehtod1(appdata v, inout v2f o)
-			{
-				float4 viewPos = mul(UNITY_MATRIX_MV, v.vertex);
-				float3 viewnormal = mul(UNITY_MATRIX_IT_MV, v.normal);
-				
-				//修正矢量 一般是向后方
-				viewnormal.z = _Zoffset;
-
-				viewPos += float4(normalize(viewnormal),0) * _Gate;
-				o.pos = mul(UNITY_MATRIX_P, viewPos);
-				o.color = v.color;
-
-			}
+			uniform float4 c1;
+			uniform float4 c3;
+			uniform float4 c4;
+			uniform float4 c8;
+			uniform float4 c9;
+			uniform float4 c10;
+			uniform float4 c11;
+			uniform float4 c12;
+			uniform float4 c229;
+			uniform float4 c234;
+			uniform float4 c235;
 
 			//罪恶装备使用的方式 Z-Bias 和VertexNormal 相结合
 			//顶线颜色
@@ -130,14 +63,26 @@
 
 			void Z_Bias_VertexNormalCombine(appdata v, inout v2f o)
 			{
-				float4 viewPos = mul(UNITY_MATRIX_MV, v.vertex);
-				float3 viewnormal = mul(UNITY_MATRIX_IT_MV, v.normal);
+				float3 worldnormal = normalize(UnityObjectToWorldNormal(v.normal));
+				float4 worldpos = mul(unity_ObjectToWorld, v.vertex);
 
-				//
-				viewnormal.z = -v.color.b;
-				viewPos += float4(normalize(viewnormal), 0) * _Gate * v.color.a;
 
-				o.pos = mul(UNITY_MATRIX_P, viewPos);
+				float3 ViewDir = UnityWorldSpaceViewDir(worldpos.xyz);
+				float l = length(ViewDir);
+				
+				float3 ViewPart = c235.y * ViewDir;
+
+				float3 WorldPart = c235.x * c229.z * c229.y * v.color.y * v.color.a * l;
+					WorldPart += c235.z* c229.z * v.color.a;
+
+					WorldPart *= worldnormal /4/2; //顶点颜色不对,所以额外进行的一个缩放修正
+
+				float3 offset = c235.w * (ViewPart + WorldPart);
+
+				worldpos.xyz += offset;
+
+
+				o.pos = UnityWorldToClipPos(worldpos);
 				o.color = v.color;
 
 			}
@@ -146,8 +91,6 @@
 			{
 				v2f o;
 				//Z_BiasMethod(v, o);
-				VertexNormalMethod0(v, o);
-				VertexNormalMehtod1(v, o);
 				Z_Bias_VertexNormalCombine(v, o);
 				return o;
 			}
