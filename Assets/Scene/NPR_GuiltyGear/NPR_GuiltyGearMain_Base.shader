@@ -41,13 +41,11 @@
 		ColorScale("ColorScale", Vector) = (1, 1, 1, 1) // c20
 		ColorOffset("ColorOffset", Vector) = (0, 0, 0, 0) // c21
 
-		
 		//c23("c23", Vector) = ( 0, 0.5, 1, 1)
 		//c24("c24", Vector) = (0.1, 1, 1, 1)
 		//c25("c25", Vector) = (8, 1, 0, 0)
 
 		//c26("c26", Vector) = (2, 0, 4.0199998, 1)	// 常量
-
 		
 	}
 	SubShader
@@ -60,7 +58,7 @@
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			
+
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
 
@@ -99,7 +97,7 @@
 			float HightLightScale;
 			float HighLightSpecial;
 
-
+			uniform float DebugFlow;
 			
 			//float4 c23;
 			
@@ -193,7 +191,6 @@
 				float4 ilm = tex2D(ILM, i.uv);
 
 
-				
 				float3 Worldnormal = normalize(i.worldnormal);
 
 				//经过修正之后的光源方向
@@ -206,7 +203,9 @@
 				//法向和光照点乘
 				float DotValue1 = dot(LightDir, Worldnormal);
 				//法向和世界位置点乘
-				float DotValue2 = dot(Worldnormal, -normalize(i.worldpos));
+
+				//float DotValue2 = dot(Worldnormal, -normalize(i.worldpos));
+				float DotValue2 = dot(Worldnormal, normalize(_WorldSpaceCameraPos.xyz - i.worldpos));
 
 
 				// 计算标准颜色
@@ -215,7 +214,6 @@
 				//		      光照贴图G通道 顶点颜色R Debug参数
 				float limit = ilm.y * i.color.x * LightOrDarkNormalScale/*c23.z*/ * keyNormal1 + c7.z;
 
-				//
 				float3 Equaloverzero = 2 * LightColor;					// r4 2倍LightColor
 				float3 Lessrzero = 2 * SSSColor;						// r6 2倍SSSColor
 				
@@ -224,7 +222,8 @@
 				//标准光照 选择基本的光照颜色
 				float3 NormalColor = BeLight * Equaloverzero + (1 - BeLight) * Lessrzero;
 
-
+			
+	
 				// 计算边缘光
 				float keyNormal2 = (abs(DotValue1 + c1.x) + c6.z)
 					* (-DotValue2 + c6.z) * c7.y + c7.w; //( *1/2 -0.5 )
@@ -240,6 +239,8 @@
 
 				//标准光照 + 边缘光的结果
 				float3 NormalAddEdageColor = NormalColor + EdageStength;
+				//return BeEdageLight;
+				//return fixed4(NormalAddEdageColor, 1);
 
 
 				//计算奇怪的颜色 影的颜色;
@@ -301,6 +302,10 @@
 				//影的颜色 + (1-比例) 光阴混合的光照
 				float3 BlendLight = beStrange * strangeS2 + (1 - beStrange) * NormalAddEdageColor;
 
+				//return beStrange;
+				//return fixed4(beStrange * strangeS2, 1);
+				//return fixed4(BlendLight, 1);
+
 
 				//高光颜色 和 基础颜色
 				float3 HightLihgt = LightColor * 2 * HightLightColor;
@@ -318,10 +323,19 @@
 				float modify = tempResult.x * -c1.w;
 				float modify2 = tempResult.y * HighLightSpecial;
 
-				float3 Dir = LightDir * 2 - (normalize(i.worldpos) *  modify);/* sat(ilm.x +c3.z(-0.25))  */
-					Dir = normalize(Dir);
+				float3 Dir = LightDir * 2 - (DotValue2 *  modify);/* sat(ilm.x +c3.z(-0.25))  */
+
+				// Dir = LightDir - DotValue2 * modify/2;
+				// Dir = Lightdir * 2 -  dot(Worldnormal, CameraPos - worldPos) * modify
+
+				Dir = normalize(Dir);
 
 				float tempDot = dot(Dir, Worldnormal);
+
+				// tempDot = dot(Dir, worldnormal) / |Dir|
+				// 2 * dot(LightDir, worldnormal) -  dot( (modify * ( dot(Worldnormal, CameraPos) - dot(Worldnormal, worldPos) ) , worldnormal)
+				// 2 * DotValue1 - dot((..) I, worldnormal)
+
 
 				float tt = c6.z - DotValue2;
 				float powvalue = pow(tt, 5);
@@ -331,12 +345,19 @@
 				float powvalue3 = pow(tt3, 4);
 
 				float tt4 = c6.z - ilm.z;
+				
+				//
+				float HightLightLimit = HightLightScale * i.color.x *  powvalue3 - tt4;
+
+				//return HightLightLimit + c6.z;
 
 				//高光 和 基础颜色的分界
 				float BeHighlihgt = step(0, HightLightScale * i.color.x *  powvalue3 - tt4);
 				//最终光照颜色
 				float3 LastLightColor = BeHighlihgt * HighColor + (1 - BeHighlihgt) * BaseColor;
 
+				//return BeHighlihgt;
+				
 				//暗处混合颜色
 				float3 DarkColor = BaseLightDarkColor.xyz;
 				float3 DarkBlendColor = DarkBlendColorS.w * 2 * DarkColor + (1 - DarkBlendColorS.w) * DarkBlendColorS.xyz;
