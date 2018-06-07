@@ -23,6 +23,7 @@
 
 		Pass
 		{
+			NAME "OUTLINE_PCG"
 			Cull Front
 
 			CGPROGRAM
