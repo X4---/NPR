@@ -4,14 +4,14 @@ using UnityEngine;
 using UnityEditor;
 
 
-[CustomEditor(typeof(CreateNormal))]
+[CustomEditor(typeof(AutoRotate))]
 public class AutoRotateShow : Editor
 {
     private Transform kCached;
-    private CreateNormal kCachedTraget;
+    private AutoRotate kCachedTraget;
     void OnEnable()
     {
-        kCachedTraget = (CreateNormal)target;
+        kCachedTraget = (AutoRotate)target;
         kCached = (kCachedTraget).transform;
         EditorApplication.update += Sample;
     }
