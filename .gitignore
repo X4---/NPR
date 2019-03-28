@@ -4,3 +4,4 @@
 /Temp
 *.csproj
 *.sln
+/obj
